@@ -1,0 +1,84 @@
+/*
+ * Polynomial Differentiation
+ *
+ * What this file does:
+ * Differentiates a polynomial represented by its coefficients.
+ *
+ * Typical problem to recognize:
+ * The derivative of a*x^i is i*a*x^(i-1).
+ *
+ * Complexity / constraints:
+ * Useful in polynomial algebra and interpolation code.
+ *
+ * Main variables:
+ * a[i] = coefficient of x^i; result[i] = derivative coefficient.
+ *
+ * Variable guide for names used in this implementation:
+ * i: loop index.
+ * ans: final or accumulated answer.
+ *
+ * How to use:
+ * 1) Copy the needed function(s) into your template.
+ * 2) Match the parameter order with the function signature below.
+ * 3) Check the modulus / indexing assumptions before using it.
+ * 4) Keep the helper functions it depends on.
+ */
+
+// Function: handle(string &temp,string &ans).
+// Purpose: see the file header for the problem this helper solves; parameter names above are the contract.
+void handle(string &temp,string &ans) {
+    string cof;
+    int ind = -1;
+    for(int i=0;i<temp.size();i++){
+        if(temp[i]=='x'){
+            ind = i;break;
+        }
+        cof += temp[i];
+    }
+    if(ind==-1)return;
+    string deg;
+    for(int i = ind+1;i<temp.size();i++){
+        deg += temp[i];
+    }
+    if(deg.empty() && cof.empty()){
+        ans += '1';
+        return;
+    }
+    if(deg.empty()){
+        ans+=cof;
+        return;
+    }
+    if(cof.empty()){
+        ans += deg;
+        if(deg=="1")return;
+        ans+='x';
+        if(deg!="2")ans+= to_string(stoll(deg) - 1);
+        return;
+    }
+    ans += to_string(stoll(cof) * stoll(deg));
+    if(deg=="1")return;
+    ans+='x';
+    if(deg!="2")ans+= to_string(stoll(deg) - 1);
+}
+// Function: PolynomialDifferentiation(string &s).
+// Purpose: see the file header for the problem this helper solves; parameter names above are the contract.
+string PolynomialDifferentiation(string &s){
+    //the format of the Polynomial is axb-cxd+kxl  : where the powers is sorted decreasing and if the cof or power is 1 doesn't be written and if power is 0 the x doesn't exist
+    string temp;
+    if(count(s.begin(),s.end(),'x')==0){
+        return "0";
+    }
+    string ans;
+    for(auto &val:s){
+        if(val=='-'||val=='+'){
+            handle(temp,ans);
+            ans+=val;
+            temp.clear();
+            continue;
+        }
+        temp+=val;
+    }
+    handle(temp,ans);
+    while(ans.back() == '+' ||ans.back() == '-')ans.pop_back();
+    return ans;
+}
